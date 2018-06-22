@@ -61,6 +61,8 @@ $(document).ready( function() {
         var start = snapshot.val().start;
         var rate = snapshot.val().rate;
 
+        console.log('New child added: '+ snapshot.val() );
+
         var monthWorked = 0;
         var totalBilled = rate * monthWorked;
 
@@ -73,10 +75,24 @@ $(document).ready( function() {
         $('<td>').text( totalBilled ).appendTo( newRow );
         
         var rCol = $('<td>').appendTo( newRow );
-        $('<i class="far fa-edit mr-2 editEmployee">').appendTo( rCol );
-        $('<i class="far fa-trash-alt deleteEmployee">').appendTo( rCol );
+        $('<i class="far fa-edit mr-2 editEmployee" style="cursor: hand;">').appendTo( rCol );
+        $('<i class="far fa-trash-alt deleteEmployee" style="cursor: hand;">').appendTo( rCol );
         
     } );
+
+    //Register onclick event for delete and update options on the table
+    $(document).on( "click", ".editEmployee", editEmployee );
+    $(document).on( "click", ".deleteEmployee", deleteEmployee );
+
+    //Edit employee
+    function editEmployee( event ) {
+        console.log( 'Editing...' );
+    }
+
+    //delete employee
+    function deleteEmployee( evenet ) {
+        console.log( 'Deleting...' );
+    }
 
 
     
