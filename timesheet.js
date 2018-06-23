@@ -20,9 +20,14 @@ $(document).ready( function() {
 
     //Reference to my database Employees
     var fbEmployees = firebase.database();
+    console.log( fbEmployees );
 
     //Registering onclick event for adding employees
-    $('#addEmployee').click( addEmployee );
+    $('#addEmployeeMore').click( addEmployee );
+    $('#addEmployeeSave').click( addEmployee );
+
+    //Set modal
+    //$('#addEmployee').modal();
 
     
     //Clear all the inputs in the form
