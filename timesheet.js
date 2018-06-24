@@ -5,6 +5,8 @@ It shows a basic create, update and deletion of data
 UM Coding Boot CAmp 2018. Joed Machado 
 */
 
+var snapshotGlobal;
+
 $(document).ready( function() {
 
     // Initialize Firebase
@@ -32,10 +34,11 @@ $(document).ready( function() {
     
     //Clear all the inputs in the form
     function clearInputs() {
-        $('#name-input').text('');
-        $('#role-input').text('');
-        $('#start-input').text('');
-        $('#rate-input').text('');
+        console.log('clearing inputs...');
+        $('#name-input').val('');
+        $('#role-input').val('');
+        $('#start-input').val('');
+        $('#rate-input').val('');
     }
       
     //Adds employee to the database
@@ -68,8 +71,13 @@ $(document).ready( function() {
 
         console.log('New child added: '+ snapshot.val() );
 
-        var monthWorked = 0;
-        var totalBilled = rate * monthWorked;
+        snapshotGlobal = snapshot;
+
+        var convertedDate = moment( start, "YYYY-MM-DD");
+
+        var monthWorked = moment().diff( moment( convertedDate), "month"); 
+
+        var totalBilled = parseFloat(rate) * parseInt(monthWorked);
 
         var newRow = $('<tr>').appendTo( $('#bodyTable') );
         $('<td>').text( name ).appendTo( newRow );
@@ -77,11 +85,11 @@ $(document).ready( function() {
         $('<td>').text( start ).appendTo( newRow );
         $('<td>').text( monthWorked ).appendTo( newRow );
         $('<td>').text( rate ).appendTo( newRow );
-        $('<td>').text( totalBilled ).appendTo( newRow );
+        $('<td>').text( totalBilled.toString() ).appendTo( newRow );
         
         var rCol = $('<td>').appendTo( newRow );
-        $('<i class="far fa-edit mr-2 editEmployee" style="cursor: hand;">').appendTo( rCol );
-        $('<i class="far fa-trash-alt deleteEmployee" style="cursor: hand;">').appendTo( rCol );
+        $('<i class="far fa-edit mr-2 editEmployee" data="'+ snapshot.getRef().getKey() +'" style="cursor: hand;">').appendTo( rCol );
+        $('<i class="far fa-trash-alt deleteEmployee" data="'+ snapshot.getRef().getKey() +'" style="cursor: hand;">').appendTo( rCol );
         
     } );
 
@@ -95,11 +103,15 @@ $(document).ready( function() {
     }
 
     //delete employee
-    function deleteEmployee( evenet ) {
-        console.log( 'Deleting...' );
+    function deleteEmployee( event ) {
+        console.log( 'Deleting ' + $(this).attr('data') );
+        fbEmployees.ref().child( $(this).attr('data') ).remove().then();
     }
 
-
+    //Its trigger when a child is removed
+    fbEmployees.ref().on( "child_removed", function(snapshot) {
+        console.log( 'child deleted - '+snapshot.val() );
+    } );
     
 
 } );
